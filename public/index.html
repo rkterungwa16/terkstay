@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adire Hotels &amp; Suites — Book Your Stay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" id="googleFontsLink" href="">
+</head>
+<body>
+
+<header class="site">
+  <div class="header-inner">
+    <div class="logo" id="logoText"></div>
+    <nav class="branches" id="branchNav"></nav>
+  </div>
+</header>
+<div class="adire-strip"></div>
+
+<section class="hero adire-bg">
+  <div class="hero-eyebrow" id="heroEyebrow"></div>
+  <h1 id="heroHeading"></h1>
+  <p class="lede" id="heroLede"></p>
+
+  <form class="search-panel" id="searchForm">
+    <div class="field">
+      <label for="branchSelect" id="labelBranch">Branch</label>
+      <select id="branchSelect"></select>
+    </div>
+    <div class="field">
+      <label for="checkIn" id="labelCheckIn">Check-in</label>
+      <input type="date" id="checkIn" required>
+    </div>
+    <div class="field">
+      <label for="checkOut" id="labelCheckOut">Check-out</label>
+      <input type="date" id="checkOut" required>
+    </div>
+    <div class="field">
+      <label for="guestsInput" id="labelGuests">Guests</label>
+      <input type="number" id="guestsInput" min="1" max="8" value="2" required>
+    </div>
+    <div class="field search-btn-cell">
+      <button type="submit" class="btn btn-gold" id="searchButton"></button>
+    </div>
+  </form>
+</section>
+
+<main>
+  <button class="back-link" id="backToHotels" style="display:none;"></button>
+  <div class="section-heading">
+    <h2 id="resultsTitle"></h2>
+    <div class="meta" id="resultsMeta"></div>
+  </div>
+  <div id="resultsEmpty"></div>
+  <div class="hotel-grid" id="hotelGrid" style="display:none;"></div>
+  <div class="room-grid" id="roomGrid" style="display:none;"></div>
+</main>
+
+<div class="adire-strip"></div>
+<footer>
+  <div class="footer-inner">
+    <div><strong id="footerChainName"></strong> — <span id="footerBranchList"></span></div>
+    <div id="footerContact"></div>
+  </div>
+</footer>
+
+<!-- Booking modal -->
+<div class="modal-overlay" id="bookingOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="bookingModalTitle"></h3>
+      <button class="modal-close" id="closeBooking" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="summary-box" id="bookingSummary"></div>
+
+      <form id="bookingForm">
+        <div class="form-grid">
+          <div class="field full">
+            <label for="guestName" id="labelGuestName">Full name</label>
+            <input type="text" id="guestName" required>
+          </div>
+          <div class="field">
+            <label for="guestEmail" id="labelGuestEmail">Email address</label>
+            <input type="email" id="guestEmail" required>
+          </div>
+          <div class="field">
+            <label for="guestPhone" id="labelGuestPhone">Phone number</label>
+            <input type="tel" id="guestPhone" required>
+          </div>
+          <div class="field full">
+            <label for="guestRequests" id="labelGuestRequests">Special requests (optional)</label>
+            <input type="text" id="guestRequests">
+          </div>
+        </div>
+        <div class="error-text" id="formError"></div>
+
+        <div class="field" style="margin-top:16px;">
+          <label id="labelPayment">Payment method</label>
+          <div class="pay-options" id="payOptions"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="cancelBooking"></button>
+          <button type="submit" class="btn btn-gold" id="confirmBookingBtn"></button>
+        </div>
+      </form>
+
+      <div class="confirm-wrap" id="confirmView" style="display:none;">
+        <div class="stamp"><b id="stampWord"></b><span id="stampBadge"></span></div>
+        <div class="confirm-ref" id="confirmRef"></div>
+        <p class="confirm-note" id="confirmNote"></p>
+        <div class="summary-box" id="confirmSummary" style="text-align:left;"></div>
+        <div class="modal-actions" style="justify-content:center;margin-top:24px;">
+          <button type="button" class="btn btn-gold" id="newBookingBtn"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
