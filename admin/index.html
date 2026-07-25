@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Config Dashboard — Adire Hotels</title>
+  <link rel="stylesheet" href="/admin/dashboard.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="brand">Config Dashboard</div>
+        <a class="view-site" id="viewSiteLink" href="/" target="_blank" rel="noopener">View site ↗</a>
+      </div>
+      <nav id="nav" class="nav"></nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div id="status" class="status">Loading…</div>
+        <div class="topbar-actions">
+          <button id="discardBtn" class="btn btn-outline" disabled>Discard changes</button>
+          <button id="saveBtn" class="btn btn-primary" disabled>Save changes</button>
+        </div>
+      </header>
+      <main id="content" class="content"></main>
+    </div>
+  </div>
+
+  <script type="module" src="/admin/dashboard.js"></script>
+</body>
+</html>

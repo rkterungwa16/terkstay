@@ -8,7 +8,15 @@ import { genBookingRef } from "../utils/format.js";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[+0-9][0-9 ]{6,}$/;
 
-export default function BookingModal({ hotel, room, search, policies, modalContent, confirmationContent, onClose }) {
+export default function BookingModal({
+  hotel,
+  room,
+  search,
+  policies,
+  modalContent,
+  confirmationContent,
+  onClose,
+}) {
   const [step, setStep] = useState("form");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -33,7 +41,11 @@ export default function BookingModal({ hotel, room, search, policies, modalConte
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!name.trim() || !EMAIL_RE.test(email.trim()) || !PHONE_RE.test(phone.trim())) {
+    if (
+      !name.trim() ||
+      !EMAIL_RE.test(email.trim()) ||
+      !PHONE_RE.test(phone.trim())
+    ) {
       setShowError(true);
       return;
     }
@@ -51,7 +63,9 @@ export default function BookingModal({ hotel, room, search, policies, modalConte
     >
       <div className="modal">
         <div className="modal-head">
-          <h3>{step === "form" ? modalContent.title : modalContent.confirmedTitle}</h3>
+          <h3>
+            {step === "form" ? modalContent.title : modalContent.confirmedTitle}
+          </h3>
           <button className="modal-close" aria-label="Close" onClick={onClose}>
             &times;
           </button>
@@ -59,11 +73,18 @@ export default function BookingModal({ hotel, room, search, policies, modalConte
         <div className="modal-body">
           {step === "form" ? (
             <>
-              <BookingSummary hotel={hotel} room={room} search={search} policies={policies} />
+              <BookingSummary
+                hotel={hotel}
+                room={room}
+                search={search}
+                policies={policies}
+              />
               <form onSubmit={handleSubmit}>
                 <div className="form-grid">
                   <div className="field full">
-                    <label htmlFor="guestName">{modalContent.fields.name}</label>
+                    <label htmlFor="guestName">
+                      {modalContent.fields.name}
+                    </label>
                     <input
                       type="text"
                       id="guestName"
@@ -74,7 +95,9 @@ export default function BookingModal({ hotel, room, search, policies, modalConte
                     />
                   </div>
                   <div className="field">
-                    <label htmlFor="guestEmail">{modalContent.fields.email}</label>
+                    <label htmlFor="guestEmail">
+                      {modalContent.fields.email}
+                    </label>
                     <input
                       type="email"
                       id="guestEmail"
@@ -85,7 +108,9 @@ export default function BookingModal({ hotel, room, search, policies, modalConte
                     />
                   </div>
                   <div className="field">
-                    <label htmlFor="guestPhone">{modalContent.fields.phone}</label>
+                    <label htmlFor="guestPhone">
+                      {modalContent.fields.phone}
+                    </label>
                     <input
                       type="tel"
                       id="guestPhone"
@@ -96,7 +121,9 @@ export default function BookingModal({ hotel, room, search, policies, modalConte
                     />
                   </div>
                   <div className="field full">
-                    <label htmlFor="guestRequests">{modalContent.fields.requests}</label>
+                    <label htmlFor="guestRequests">
+                      {modalContent.fields.requests}
+                    </label>
                     <input
                       type="text"
                       id="guestRequests"
@@ -107,11 +134,17 @@ export default function BookingModal({ hotel, room, search, policies, modalConte
                   </div>
                 </div>
 
-                {showError && <div className="error-text">{modalContent.errorText}</div>}
+                {showError && (
+                  <div className="error-text">{modalContent.errorText}</div>
+                )}
 
                 <div className="field" style={{ marginTop: 16 }}>
                   <label>{modalContent.paymentLabel}</label>
-                  <PaymentOptions methods={modalContent.paymentMethods} selected={payMethod} onChange={setPayMethod} />
+                  <PaymentOptions
+                    methods={modalContent.paymentMethods}
+                    selected={payMethod}
+                    onChange={setPayMethod}
+                  />
                 </div>
 
                 <div className="modal-actions">

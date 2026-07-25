@@ -4,7 +4,8 @@ const path = require("path");
 
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, "public");       // Vite build output (React app)
-const CONFIG_PATH = path.join(__dirname, "config.json"); // single source of truth, outside public/
+const ADMIN_DIR = path.join(__dirname, "admin");         // config dashboard (plain HTML/CSS/JS, no build step)
+const CONFIG_PATH = path.join(__dirname, "config.json"); // single source of truth, outside public/ and admin/
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -25,27 +26,31 @@ function sendJSON(res, status, obj) {
   res.end(body);
 }
 
-function serveStatic(req, res) {
-  let urlPath = decodeURIComponent(req.url.split("?")[0]);
-  if (urlPath === "/") urlPath = "/index.html";
+// Serves static files out of baseDir. If spaFallback is true, unknown paths
+// fall back to baseDir/index.html (used for the React app's client routing).
+function serveFromDir(baseDir, urlPath, res, { spaFallback } = {}) {
+  if (urlPath === "" || urlPath === "/") urlPath = "/index.html";
 
-  const filePath = path.join(PUBLIC_DIR, urlPath);
-  if (!filePath.startsWith(PUBLIC_DIR)) {
+  const filePath = path.join(baseDir, urlPath);
+  if (!filePath.startsWith(baseDir)) {
     res.writeHead(403);
     return res.end("Forbidden");
   }
 
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      // SPA fallback: unknown routes serve index.html
-      return fs.readFile(path.join(PUBLIC_DIR, "index.html"), (err2, indexData) => {
-        if (err2) {
-          res.writeHead(404, { "Content-Type": "text/plain" });
-          return res.end("Not found: " + urlPath + " (did you run `npm run build` in /frontend?)");
-        }
-        res.writeHead(200, { "Content-Type": MIME[".html"] });
-        res.end(indexData);
-      });
+      if (spaFallback) {
+        return fs.readFile(path.join(baseDir, "index.html"), (err2, indexData) => {
+          if (err2) {
+            res.writeHead(404, { "Content-Type": "text/plain" });
+            return res.end("Not found: " + urlPath + " (did you run `npm run build` in /frontend?)");
+          }
+          res.writeHead(200, { "Content-Type": MIME[".html"] });
+          res.end(indexData);
+        });
+      }
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      return res.end("Not found: " + urlPath);
     }
     const ext = path.extname(filePath);
     res.writeHead(200, { "Content-Type": MIME[ext] || "application/octet-stream" });
@@ -87,13 +92,22 @@ function handleConfigApi(req, res) {
 }
 
 const server = http.createServer((req, res) => {
-  if (req.url.startsWith("/api/config")) {
+  const urlPath = decodeURIComponent(req.url.split("?")[0]);
+
+  if (urlPath.startsWith("/api/config")) {
     return handleConfigApi(req, res);
   }
-  serveStatic(req, res);
+
+  if (urlPath === "/admin" || urlPath.startsWith("/admin/")) {
+    const rest = urlPath.replace(/^\/admin/, "") || "/";
+    return serveFromDir(ADMIN_DIR, rest, res);
+  }
+
+  serveFromDir(PUBLIC_DIR, urlPath, res, { spaFallback: true });
 });
 
 server.listen(PORT, () => {
   console.log(`Adire Hotels app running at http://localhost:${PORT}`);
+  console.log(`Config dashboard at http://localhost:${PORT}/admin`);
   console.log(`Edit config.json (or PUT to /api/config) to update styles and hotel data.`);
 });
