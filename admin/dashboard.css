@@ -150,6 +150,8 @@ body{
   color:var(--text);
 }
 .field input[type="text"],
+.field input[type="number"],
+.field select,
 .field textarea{
   border:1px solid var(--border);
   border-radius:6px;
@@ -160,6 +162,8 @@ body{
   background:#fff;
 }
 .field input[type="text"]:focus,
+.field input[type="number"]:focus,
+.field select:focus,
 .field textarea:focus{
   outline:2px solid var(--accent);
   outline-offset:-1px;
@@ -167,6 +171,7 @@ body{
 }
 .field textarea{ resize:vertical; }
 .field-hint{ font-size:0.74rem; color:var(--text-dim); }
+.field-dimmed{ opacity:0.5; }
 
 .color-row{ display:flex; gap:8px; align-items:center; }
 .color-row input[type="color"]{
@@ -179,6 +184,93 @@ body{
   background:none;
 }
 .color-row input[type="text"]{ flex:1; min-width:0; }
+
+/* ---------- Checkboxes ---------- */
+.checkbox-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:0.86rem;
+  font-weight:500;
+  color:var(--text);
+  cursor:pointer;
+}
+.checkbox-item input[type="checkbox"]{
+  width:16px;
+  height:16px;
+  accent-color:var(--accent);
+  cursor:pointer;
+}
+.checkbox-group{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 18px;
+  padding-top:2px;
+}
+
+/* ---------- Repeatable item cards (hotels, room types, amenities) ---------- */
+.item-card{ border-color:var(--border); }
+.item-card-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:16px;
+}
+.item-card-head h3{ margin:0; }
+
+.add-card{
+  border:1.5px dashed var(--border);
+  background:transparent;
+  box-shadow:none;
+}
+.add-card h3{ font-size:0.95rem; color:var(--text-dim); margin-bottom:14px; }
+
+.page-header{ margin-bottom:20px; }
+.page-header h2{ font-size:1.3rem; margin:0 0 6px; }
+.page-header p{ margin:0; font-size:0.86rem; color:var(--text-dim); max-width:640px; }
+
+.btn-mini{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:6px;
+  padding:6px 12px;
+  font-size:0.78rem;
+  font-weight:600;
+  font-family:inherit;
+  cursor:pointer;
+  color:var(--text);
+}
+.btn-mini:hover{ background:var(--bg); }
+.btn-mini-danger{ color:var(--error); border-color:#FCA5A5; }
+.btn-mini-danger:hover{ background:#FEF2F2; }
+
+/* ---------- Editable string lists (e.g. payment methods) ---------- */
+.list-editor{ display:flex; flex-direction:column; gap:8px; }
+.list-row{ display:flex; gap:8px; align-items:center; }
+.list-row input[type="text"]{ flex:1; }
+
+/* ---------- Components sub-tabs ---------- */
+.subtabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-bottom:20px;
+  border-bottom:1px solid var(--border);
+  padding-bottom:14px;
+}
+.subtab{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:20px;
+  padding:7px 14px;
+  font-size:0.82rem;
+  font-weight:600;
+  font-family:inherit;
+  color:var(--text-dim);
+  cursor:pointer;
+}
+.subtab:hover{ background:var(--bg); }
+.subtab.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
 
 @media(max-width:800px){
   .layout{ grid-template-columns:1fr; }

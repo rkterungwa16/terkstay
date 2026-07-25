@@ -1,14 +1,14 @@
 import metaSection from "./sections/meta.js";
 import themeSection from "./sections/theme.js";
-import { humanize } from "./fields.js";
+import policiesSection from "./sections/policies.js";
+import amenitiesSection from "./sections/amenities.js";
+import roomTypesSection from "./sections/roomTypes.js";
+import hotelsSection from "./sections/hotels.js";
+import componentsSection from "./sections/components.js";
 
-// Sections with a working editor. Add new modules here as they're built —
-// each one just needs { key, label, description, render(container, draft, markDirty) }.
-const SECTIONS = [metaSection, themeSection];
-
-// Config keys that exist but don't have an editor yet — shown greyed-out in
-// the sidebar so it's clear what's coming without implying they're editable.
-const COMING_SOON = ["policies", "amenities", "roomTypes", "hotels", "components"];
+// Every config.json top-level key now has a working editor — add new modules
+// here as new config sections are introduced.
+const SECTIONS = [metaSection, themeSection, policiesSection, amenitiesSection, roomTypesSection, hotelsSection, componentsSection];
 
 const el = {
   nav: document.getElementById("nav"),
@@ -57,13 +57,6 @@ function renderNav() {
       renderActiveSection();
     });
     el.nav.appendChild(btn);
-  });
-
-  COMING_SOON.forEach((key) => {
-    const item = document.createElement("div");
-    item.className = "nav-item nav-item-disabled";
-    item.innerHTML = `<span class="nav-label">${humanize(key)}</span><span class="nav-desc">Coming soon</span>`;
-    el.nav.appendChild(item);
   });
 }
 
