@@ -2,7 +2,7 @@
   "name": "adire-hotels-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Adire Hotels & Suites booking demo, config-driven via public/config.json",
+  "description": "Adire Hotels & Suites booking demo — React frontend, config-driven via config.json",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

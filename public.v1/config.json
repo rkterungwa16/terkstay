@@ -1,0 +1,395 @@
+{
+  "meta": {
+    "siteName": "Adire Hotels & Suites",
+    "description": "Nigerian hotel chain booking site"
+  },
+  "theme": {
+    "colors": {
+      "indigoDeep": "#1B2440",
+      "indigoMid": "#33528C",
+      "indigoPale": "#DCE4F2",
+      "gold": "#C89B3C",
+      "goldLight": "#E7C878",
+      "ivory": "#F6F1E7",
+      "ivoryDim": "#EFE7D6",
+      "ink": "#211C17",
+      "palm": "#3F6B4F",
+      "rust": "#A23B2E",
+      "white": "#FFFFFF"
+    },
+    "typography": {
+      "fontDisplay": "'Fraunces', serif",
+      "fontBody": "'IBM Plex Sans', sans-serif",
+      "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+    },
+    "radius": "2px",
+    "pattern": {
+      "dotColor": "#C89B3C",
+      "cellSize": "20px",
+      "stripHeight": "14px"
+    }
+  },
+  "policies": {
+    "currency": "NGN",
+    "currencySymbol": "₦",
+    "vatRate": 0.075,
+    "serviceRate": 0.1,
+    "dateLocale": "en-NG",
+    "defaultGuests": 2,
+    "defaultNights": 2
+  },
+  "amenities": {
+    "wifi": {
+      "label": "Free Wi-Fi",
+      "icon": "wifi"
+    },
+    "power": {
+      "label": "24hr Power",
+      "icon": "power"
+    },
+    "breakfast": {
+      "label": "Breakfast incl.",
+      "icon": "breakfast"
+    },
+    "pool": {
+      "label": "Pool access",
+      "icon": "pool"
+    },
+    "gym": {
+      "label": "Gym access",
+      "icon": "gym"
+    },
+    "shuttle": {
+      "label": "Airport shuttle",
+      "icon": "shuttle"
+    }
+  },
+  "roomTypes": [
+    {
+      "id": "Standard",
+      "tag": "Standard Room",
+      "capacity": 2,
+      "color": "#33528C",
+      "basePrice": 32000,
+      "amenities": [
+        "wifi",
+        "power",
+        "breakfast"
+      ],
+      "minStars": 3
+    },
+    {
+      "id": "Deluxe",
+      "tag": "Deluxe Room",
+      "capacity": 2,
+      "color": "#1B2440",
+      "basePrice": 48000,
+      "amenities": [
+        "wifi",
+        "power",
+        "breakfast",
+        "pool"
+      ],
+      "minStars": 3
+    },
+    {
+      "id": "Executive",
+      "tag": "Executive Suite",
+      "capacity": 3,
+      "color": "#7A5A22",
+      "basePrice": 75000,
+      "amenities": [
+        "wifi",
+        "power",
+        "breakfast",
+        "pool",
+        "gym"
+      ],
+      "minStars": 4
+    },
+    {
+      "id": "Presidential",
+      "tag": "Presidential Suite",
+      "capacity": 4,
+      "color": "#4A2E1E",
+      "basePrice": 140000,
+      "amenities": [
+        "wifi",
+        "power",
+        "breakfast",
+        "pool",
+        "gym",
+        "shuttle"
+      ],
+      "minStars": 5
+    }
+  ],
+  "hotels": [
+    {
+      "id": "lag-vi",
+      "name": "Adire Victoria Island",
+      "city": "Lagos",
+      "area": "Victoria Island",
+      "state": "Lagos",
+      "stars": 5,
+      "description": "Flagship waterfront property with conference facilities and rooftop pool.",
+      "priceFactor": 1.3,
+      "availability": {
+        "Standard": 4,
+        "Deluxe": 2,
+        "Executive": 1,
+        "Presidential": 0
+      }
+    },
+    {
+      "id": "lag-lk",
+      "name": "Adire Lekki",
+      "city": "Lagos",
+      "area": "Lekki Phase 1",
+      "state": "Lagos",
+      "stars": 4,
+      "description": "Modern mid-rise near the tech corridor, popular with business travellers.",
+      "priceFactor": 1.15,
+      "availability": {
+        "Standard": 6,
+        "Deluxe": 3,
+        "Executive": 2
+      }
+    },
+    {
+      "id": "lag-ik",
+      "name": "Adire Ikeja Airport",
+      "city": "Lagos",
+      "area": "Ikeja GRA",
+      "state": "Lagos",
+      "stars": 3,
+      "description": "Convenient stopover a short drive from Murtala Muhammed Airport.",
+      "priceFactor": 0.95,
+      "availability": {
+        "Standard": 5,
+        "Deluxe": 0
+      }
+    },
+    {
+      "id": "abv-mt",
+      "name": "Adire Maitama",
+      "city": "Abuja",
+      "area": "Maitama",
+      "state": "FCT",
+      "stars": 5,
+      "description": "Diplomatic-district hotel favoured for conferences and state visits.",
+      "priceFactor": 1.2,
+      "availability": {
+        "Standard": 3,
+        "Deluxe": 2,
+        "Executive": 0,
+        "Presidential": 1
+      }
+    },
+    {
+      "id": "abv-ws",
+      "name": "Adire Wuse",
+      "city": "Abuja",
+      "area": "Wuse II",
+      "state": "FCT",
+      "stars": 4,
+      "description": "Central location close to shopping and the business district.",
+      "priceFactor": 1.05,
+      "availability": {
+        "Standard": 5,
+        "Deluxe": 4,
+        "Executive": 2
+      }
+    },
+    {
+      "id": "phc-gra",
+      "name": "Adire GRA Port Harcourt",
+      "city": "Port Harcourt",
+      "area": "GRA Phase 2",
+      "state": "Rivers",
+      "stars": 4,
+      "description": "Quiet, leafy compound favoured by oil-and-gas visitors.",
+      "priceFactor": 1,
+      "availability": {
+        "Standard": 4,
+        "Deluxe": 3,
+        "Executive": 1
+      }
+    },
+    {
+      "id": "enu-il",
+      "name": "Adire Independence",
+      "city": "Enugu",
+      "area": "Independence Layout",
+      "state": "Enugu",
+      "stars": 3,
+      "description": "Comfortable base close to the city centre and Nike Lake.",
+      "priceFactor": 0.82,
+      "availability": {
+        "Standard": 6,
+        "Deluxe": 2
+      }
+    },
+    {
+      "id": "kan-ns",
+      "name": "Adire Nassarawa",
+      "city": "Kano",
+      "area": "Nassarawa GRA",
+      "state": "Kano",
+      "stars": 3,
+      "description": "Long-standing city hotel popular with commercial travellers.",
+      "priceFactor": 0.78,
+      "availability": {
+        "Standard": 7,
+        "Deluxe": 1
+      }
+    }
+  ],
+  "components": {
+    "header": {
+      "style": {
+        "background": "var(--indigo-deep)",
+        "textColor": "var(--ivory)",
+        "accentColor": "var(--gold-light)"
+      },
+      "content": {
+        "logoText": "ADIRE",
+        "logoSubtitle": "Hotels & Suites",
+        "showBranchNav": true
+      }
+    },
+    "hero": {
+      "style": {
+        "textColor": "var(--ivory)",
+        "eyebrowColor": "var(--gold-light)",
+        "ledeColor": "var(--indigo-pale)"
+      },
+      "content": {
+        "eyebrow": "Nigerian hospitality, nationwide",
+        "heading": "Find your room across our properties.",
+        "lede": "Reliable 24-hour power, fibre Wi-Fi and a proper Nigerian breakfast — book directly with Adire Hotels & Suites, no middleman.",
+        "searchButtonLabel": "Search hotels"
+      }
+    },
+    "searchPanel": {
+      "style": {
+        "background": "var(--ivory)",
+        "textColor": "var(--ink)",
+        "labelColor": "var(--indigo-mid)",
+        "fieldBorder": "#D9CFB8"
+      },
+      "content": {
+        "labels": {
+          "branch": "Branch",
+          "checkIn": "Check-in",
+          "checkOut": "Check-out",
+          "guests": "Guests"
+        },
+        "allBranchesLabel": "All branches",
+        "emptyStateText": "Choose a branch, your dates and guest count above, then search to see matching hotels.",
+        "searchingTitleAll": "Hotels — all branches",
+        "searchingTitleBranch": "Hotels in {branch}"
+      }
+    },
+    "hotelCard": {
+      "style": {
+        "background": "var(--white)",
+        "border": "#EAE2CC",
+        "badgeBg": "rgba(255,255,255,0.14)",
+        "starColor": "var(--gold-light)",
+        "priceColor": "var(--indigo-deep)",
+        "availableColor": "var(--palm)"
+      },
+      "content": {
+        "viewRoomsLabel": "View rooms",
+        "unavailableLabel": "Unavailable",
+        "noFitLabel": "No rooms fit your party size for these dates",
+        "availableLabel": "{count} room{s} available for your dates",
+        "fromLabel": "from / night",
+        "backToHotelsLabel": "← Back to all hotels"
+      }
+    },
+    "roomCard": {
+      "style": {
+        "border": "#EAE2CC",
+        "tierBadgeText": "var(--gold-light)",
+        "priceColor": "var(--indigo-deep)",
+        "leftNoteColor": "var(--rust)"
+      },
+      "content": {
+        "bookLabel": "Book room",
+        "soldOutLabel": "Sold out",
+        "sleepsLabel": "Sleeps up to {n} guest{s}",
+        "notEnoughLabel": " — not enough for your party size",
+        "leftLabel": "{n} room{s} left"
+      }
+    },
+    "bookingModal": {
+      "style": {
+        "headerBg": "var(--indigo-deep)",
+        "headerText": "var(--ivory)",
+        "background": "var(--ivory)",
+        "payOptionBorder": "#D9CFB8",
+        "payOptionSelectedBg": "var(--indigo-pale)"
+      },
+      "content": {
+        "title": "Complete your booking",
+        "confirmedTitle": "Booking confirmed",
+        "fields": {
+          "name": "Full name",
+          "namePlaceholder": "e.g. Chiamaka Okafor",
+          "email": "Email address",
+          "emailPlaceholder": "you@email.com",
+          "phone": "Phone number",
+          "phonePlaceholder": "+234 801 234 5678",
+          "requests": "Special requests (optional)",
+          "requestsPlaceholder": "Early check-in, high floor, etc."
+        },
+        "paymentLabel": "Payment method",
+        "paymentMethods": [
+          "Paystack",
+          "Flutterwave",
+          "Bank Transfer",
+          "Pay at Hotel"
+        ],
+        "errorText": "Please fill in all required fields with a valid email and phone number.",
+        "cancelLabel": "Cancel",
+        "confirmLabel": "Confirm booking"
+      }
+    },
+    "confirmation": {
+      "style": {
+        "stampBorder": "var(--gold)",
+        "stampText": "var(--indigo-deep)"
+      },
+      "content": {
+        "stampWord": "ADIRE",
+        "badgeText": "Confirmed",
+        "note": "A confirmation has been sent to your email. Please show this reference at check-in.",
+        "newBookingLabel": "Make another booking"
+      }
+    },
+    "footer": {
+      "style": {
+        "background": "var(--indigo-deep)",
+        "textColor": "var(--indigo-pale)",
+        "accentColor": "var(--gold-light)"
+      },
+      "content": {
+        "chainName": "Adire Hotels & Suites",
+        "phone": "+234 700 123 4567",
+        "email": "reservations@adirehotels.ng"
+      }
+    },
+    "buttons": {
+      "style": {
+        "primaryBg": "var(--gold)",
+        "primaryText": "var(--indigo-deep)",
+        "primaryHoverBg": "var(--gold-light)",
+        "outlineBorder": "var(--indigo-deep)",
+        "outlineText": "var(--indigo-deep)",
+        "outlineHoverBg": "var(--indigo-deep)"
+      }
+    }
+  }
+}
