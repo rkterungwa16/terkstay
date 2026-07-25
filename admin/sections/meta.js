@@ -1,36 +1,33 @@
 import { textField, textareaField, sectionCard } from "../fields.js";
+import { wireField } from "../state.js";
 
 export default {
   key: "meta",
   label: "Meta",
   description: "Basic site identity",
 
-  render(container, draft, markDirty) {
+  render(container, { state, bus }) {
     container.innerHTML = "";
 
     const { card, grid } = sectionCard("Site meta", "Shown in the browser tab and used for site identity.");
 
     grid.appendChild(
-      textField({
+      wireField(textField, {
+        bus,
+        state,
+        path: "meta.siteName",
         label: "Site name",
-        value: draft.meta.siteName,
-        hint: 'e.g. "Adire Hotels & Suites" — appears in the browser tab title.',
-        onChange: (val) => {
-          draft.meta.siteName = val;
-          markDirty();
-        }
+        hint: 'e.g. "Adire Hotels & Suites" — appears in the browser tab title.'
       })
     );
 
     grid.appendChild(
-      textareaField({
+      wireField(textareaField, {
+        bus,
+        state,
+        path: "meta.description",
         label: "Description",
-        value: draft.meta.description,
-        hint: "Short internal description of what this site is.",
-        onChange: (val) => {
-          draft.meta.description = val;
-          markDirty();
-        }
+        hint: "Short internal description of what this site is."
       })
     );
 

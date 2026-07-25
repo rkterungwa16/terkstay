@@ -1,4 +1,5 @@
 import { textField, textareaField, colorField, checkboxField, listField, sectionCard, pageHeader, humanize } from "../fields.js";
+import { wireField, wireCheckbox } from "../state.js";
 
 const SUB_COMPONENTS = [
   { key: "header", label: "Header" },
@@ -12,79 +13,42 @@ const SUB_COMPONENTS = [
   { key: "buttons", label: "Buttons" }
 ];
 
-// Persists across re-renders within the page session, so switching to another
-// top-level section and back doesn't reset which sub-tab you were on.
+// Persists across re-renders within the page session, so switching to
+// another top-level section and back doesn't reset which sub-tab you were on.
 let activeSub = "header";
 
-function getPath(obj, path) {
-  return path.split(".").reduce((o, k) => o?.[k], obj);
-}
-function setPath(obj, path, val) {
-  const keys = path.split(".");
-  const last = keys.pop();
-  const target = keys.reduce((o, k) => o[k], obj);
-  target[last] = val;
-}
-
-function renderStyleCard(style, markDirty) {
+function renderStyleCard(compKey, style, ctx) {
   const { card, grid } = sectionCard("Style", "CSS color values — hex, rgba(), or var(--token) references.");
   grid.classList.add("field-grid-colors");
   Object.keys(style).forEach((key) => {
     grid.appendChild(
-      colorField({
-        label: humanize(key),
-        value: style[key],
-        onChange: (v) => {
-          style[key] = v;
-          markDirty();
-        }
+      wireField(colorField, {
+        bus: ctx.bus,
+        state: ctx.state,
+        path: `components.${compKey}.style.${key}`,
+        label: humanize(key)
       })
     );
   });
   return card;
 }
 
-function renderContentCard(subKey, content, markDirty) {
+function renderContentCard(subKey, content, ctx) {
   const { card, grid } = sectionCard("Content", "Copy and labels shown on the live site.");
+  const base = `components.${subKey}.content`;
 
-  const text = (label, path, hint, wide) => {
-    const el = textField({
-      label,
-      value: getPath(content, path),
-      hint,
-      onChange: (v) => {
-        setPath(content, path, v);
-        markDirty();
-      }
-    });
+  const text = (label, suffix, hint, wide) => {
+    const el = wireField(textField, { bus: ctx.bus, state: ctx.state, path: `${base}.${suffix}`, label, hint });
     if (wide) el.classList.add("field-wide");
     grid.appendChild(el);
   };
-  const textarea = (label, path, hint) => {
-    const el = textareaField({
-      label,
-      value: getPath(content, path),
-      hint,
-      onChange: (v) => {
-        setPath(content, path, v);
-        markDirty();
-      }
-    });
+  const textarea = (label, suffix, hint) => {
+    const el = wireField(textareaField, { bus: ctx.bus, state: ctx.state, path: `${base}.${suffix}`, label, hint });
     el.classList.add("field-wide");
     grid.appendChild(el);
   };
-  const bool = (label, path, hint) => {
-    grid.appendChild(
-      checkboxField({
-        label,
-        checked: getPath(content, path),
-        hint,
-        onChange: (v) => {
-          setPath(content, path, v);
-          markDirty();
-        }
-      })
-    );
+  const bool = (label, suffix, hint) => {
+    grid.appendChild(wireCheckbox(checkboxField, { bus: ctx.bus, state: ctx.state, path: `${base}.${suffix}`, label, hint }));
   };
 
   switch (subKey) {
@@ -144,13 +108,16 @@ function renderContentCard(subKey, content, markDirty) {
       text("Phone placeholder", "fields.phonePlaceholder");
       text("Requests field label", "fields.requests");
       text("Requests placeholder", "fields.requestsPlaceholder");
+      // Composite widget (multiple inputs, not a single bindable element) —
+      // writes straight into the reactive proxy; the section's own
+      // full re-render (triggered on Discard) is what repaints this one,
+      // rather than bind()'s single-element WeakRef mechanism.
       grid.appendChild(
         listField({
           label: "Payment methods",
           values: content.paymentMethods,
           onChange: (next) => {
-            content.paymentMethods = next;
-            markDirty();
+            ctx.state[`${base}.paymentMethods`] = next;
           }
         })
       );
@@ -178,13 +145,13 @@ export default {
   label: "Components",
   description: "Per-component style & copy",
 
-  render(container, draft, markDirty) {
+  render(container, ctx) {
     container.innerHTML = "";
     container.appendChild(
       pageHeader("Components", "Each piece of the site's UI — pick one below to edit its colors and copy.")
     );
 
-    const components = draft.components;
+    const components = ctx.draft.components;
 
     const tabs = document.createElement("div");
     tabs.className = "subtabs";
@@ -195,14 +162,14 @@ export default {
       btn.textContent = sc.label;
       btn.addEventListener("click", () => {
         activeSub = sc.key;
-        this.render(container, draft, markDirty);
+        this.render(container, ctx);
       });
       tabs.appendChild(btn);
     });
     container.appendChild(tabs);
 
     const comp = components[activeSub];
-    if (comp.style) container.appendChild(renderStyleCard(comp.style, markDirty));
-    if (comp.content) container.appendChild(renderContentCard(activeSub, comp.content, markDirty));
+    if (comp.style) container.appendChild(renderStyleCard(activeSub, comp.style, ctx));
+    if (comp.content) container.appendChild(renderContentCard(activeSub, comp.content, ctx));
   }
 };

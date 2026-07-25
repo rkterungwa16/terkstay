@@ -5,7 +5,7 @@ export default {
   label: "Hotels",
   description: "Properties and per-room availability",
 
-  render(container, draft, markDirty) {
+  render(container, { draft, markDirty }) {
     container.innerHTML = "";
     container.appendChild(
       pageHeader("Hotels", "One card per property. Availability counts are rooms left per room type at this hotel.")

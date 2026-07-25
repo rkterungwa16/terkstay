@@ -5,7 +5,7 @@ export default {
   label: "Room Types",
   description: "Tiers offered across hotels",
 
-  render(container, draft, markDirty) {
+  render(container, { draft, markDirty }) {
     container.innerHTML = "";
     container.appendChild(
       pageHeader(

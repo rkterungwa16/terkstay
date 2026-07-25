@@ -11,7 +11,7 @@ export default {
   label: "Amenities",
   description: "Icon + label pairs",
 
-  render(container, draft, markDirty) {
+  render(container, { draft, markDirty }) {
     container.innerHTML = "";
     container.appendChild(
       pageHeader(
