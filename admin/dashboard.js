@@ -29,7 +29,8 @@ const el = {
   activityLog: document.getElementById("activityLog"),
   sidebar: document.getElementById("sidebar"),
   menuToggle: document.getElementById("menuToggle"),
-  drawerBackdrop: document.getElementById("drawerBackdrop")
+  drawerBackdrop: document.getElementById("drawerBackdrop"),
+  main: document.getElementById("main")
 };
 
 let original = null; // last-saved config, as fetched/confirmed from the server
@@ -109,11 +110,28 @@ function renderActivityLog() {
     .join("");
 }
 
+// Builds the nav buttons once, then on every later call just updates
+// active/aria-current on the existing elements instead of tearing the DOM
+// down and rebuilding it. Rebuilding via innerHTML = "" on every click
+// destroyed whichever button had focus (the one the user just activated),
+// silently dropping keyboard focus back to <body> — this fixes that.
 function renderNav() {
+  if (el.nav.children.length === SECTIONS.length) {
+    [...el.nav.children].forEach((btn, i) => {
+      const isActive = SECTIONS[i].key === activeKey;
+      btn.classList.toggle("active", isActive);
+      if (isActive) btn.setAttribute("aria-current", "page");
+      else btn.removeAttribute("aria-current");
+    });
+    return;
+  }
+
   el.nav.innerHTML = "";
   SECTIONS.forEach((section) => {
     const btn = document.createElement("button");
+    btn.type = "button";
     btn.className = "nav-item" + (section.key === activeKey ? " active" : "");
+    if (section.key === activeKey) btn.setAttribute("aria-current", "page");
     btn.innerHTML = `<span class="nav-label">${section.label}</span><span class="nav-desc">${section.description}</span>`;
     btn.addEventListener("click", () => {
       activeKey = section.key;
@@ -197,22 +215,92 @@ function discardChanges() {
 
 // ---------- Mobile sidebar drawer ----------
 //
-// Pure presentation state — doesn't touch config/dirty-tracking at all.
-// The sidebar/backdrop only actually move under the max-width:800px query
-// in dashboard.css; toggling these classes above that width is harmless
-// (the CSS for .open simply doesn't apply).
+// The .menu-toggle button that's the only way to call openDrawer() is
+// display:none outside the max-width:800px query — and display:none
+// elements are removed from the accessibility tree in every major screen
+// reader, not just visually hidden. So "the drawer is open" can only ever
+// happen at mobile widths; role="dialog"/aria-modal/inert are safe to
+// apply unconditionally here without a matchMedia check.
+//
+// closeDrawer() is a no-op unless the drawer is actually open — it's
+// called unconditionally after every nav-item click (see renderNav) so it
+// has to be safe to call on desktop too, where it must NOT try to move
+// focus anywhere (there'd be nothing sensible to move it to).
+let lastFocusedBeforeDrawer = null;
+
+function getFocusable(container) {
+  return [...container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')].filter(
+    (n) => n.offsetParent !== null
+  );
+}
+
+function trapFocus(e) {
+  if (e.key !== "Tab") return;
+  const focusable = getFocusable(el.sidebar);
+  if (focusable.length === 0) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+}
+
 function openDrawer() {
+  if (el.sidebar.classList.contains("open")) return;
+  lastFocusedBeforeDrawer = document.activeElement;
+
   el.sidebar.classList.add("open");
   el.drawerBackdrop.classList.add("open");
   el.menuToggle.classList.add("open");
   el.menuToggle.setAttribute("aria-expanded", "true");
+  el.menuToggle.setAttribute("aria-label", "Close menu");
+
+  // The sidebar behaves like a modal dialog while open as a drawer —
+  // give it dialog semantics only for this state (see comment above for
+  // why this can't leak into the always-visible desktop layout).
+  el.sidebar.setAttribute("role", "dialog");
+  el.sidebar.setAttribute("aria-modal", "true");
+  el.sidebar.setAttribute("aria-label", "Config sections");
+
+  // Hide the rest of the page from assistive tech while the drawer acts
+  // as a modal, and stop it from being reachable by pointer/keyboard too.
+  el.main.setAttribute("aria-hidden", "true");
+  el.main.inert = true;
+  document.body.style.overflow = "hidden";
+
+  document.addEventListener("keydown", trapFocus);
+
+  const focusable = getFocusable(el.sidebar);
+  (focusable[0] || el.sidebar).focus();
 }
+
 function closeDrawer() {
+  if (!el.sidebar.classList.contains("open")) return;
+
   el.sidebar.classList.remove("open");
   el.drawerBackdrop.classList.remove("open");
   el.menuToggle.classList.remove("open");
   el.menuToggle.setAttribute("aria-expanded", "false");
+  el.menuToggle.setAttribute("aria-label", "Open menu");
+
+  el.sidebar.removeAttribute("role");
+  el.sidebar.removeAttribute("aria-modal");
+  el.sidebar.removeAttribute("aria-label");
+
+  el.main.removeAttribute("aria-hidden");
+  el.main.inert = false;
+  document.body.style.overflow = "";
+
+  document.removeEventListener("keydown", trapFocus);
+
+  (lastFocusedBeforeDrawer || el.menuToggle).focus();
+  lastFocusedBeforeDrawer = null;
 }
+
 function toggleDrawer() {
   el.sidebar.classList.contains("open") ? closeDrawer() : openDrawer();
 }
@@ -222,6 +310,17 @@ el.drawerBackdrop.addEventListener("click", closeDrawer);
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeDrawer();
 });
+
+// If the window is widened past the drawer breakpoint while it's open,
+// release the inert/aria-hidden lock on the main content — otherwise a
+// user who opens the drawer on a narrow window and then widens it ends up
+// with an unfocusable, unclickable page that looks completely normal.
+if (typeof window.matchMedia === "function") {
+  const mobileDrawerQuery = window.matchMedia("(max-width: 800px)");
+  mobileDrawerQuery.addEventListener("change", (e) => {
+    if (!e.matches) closeDrawer();
+  });
+}
 
 window.addEventListener("beforeunload", (e) => {
   if (dirty) {
