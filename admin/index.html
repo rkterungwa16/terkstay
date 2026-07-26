@@ -8,7 +8,9 @@
 </head>
 <body>
   <div class="layout">
-    <aside class="sidebar">
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+    <aside class="sidebar" id="sidebar">
       <div class="sidebar-head">
         <div class="brand">Config Dashboard</div>
         <a class="view-site" id="viewSiteLink" href="/" target="_blank" rel="noopener">View site ↗</a>
@@ -18,6 +20,11 @@
 
     <div class="main">
       <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
+          <span class="menu-toggle-bar"></span>
+          <span class="menu-toggle-bar"></span>
+          <span class="menu-toggle-bar"></span>
+        </button>
         <div id="status" class="status">Loading…</div>
         <div class="topbar-actions">
           <button id="discardBtn" class="btn btn-outline" disabled>Discard changes</button>

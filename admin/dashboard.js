@@ -26,7 +26,10 @@ const el = {
   discardBtn: document.getElementById("discardBtn"),
   status: document.getElementById("status"),
   viewSiteLink: document.getElementById("viewSiteLink"),
-  activityLog: document.getElementById("activityLog")
+  activityLog: document.getElementById("activityLog"),
+  sidebar: document.getElementById("sidebar"),
+  menuToggle: document.getElementById("menuToggle"),
+  drawerBackdrop: document.getElementById("drawerBackdrop")
 };
 
 let original = null; // last-saved config, as fetched/confirmed from the server
@@ -116,6 +119,7 @@ function renderNav() {
       activeKey = section.key;
       renderNav();
       renderActiveSection();
+      closeDrawer();
     });
     el.nav.appendChild(btn);
   });
@@ -190,6 +194,34 @@ function discardChanges() {
     })
   );
 }
+
+// ---------- Mobile sidebar drawer ----------
+//
+// Pure presentation state — doesn't touch config/dirty-tracking at all.
+// The sidebar/backdrop only actually move under the max-width:800px query
+// in dashboard.css; toggling these classes above that width is harmless
+// (the CSS for .open simply doesn't apply).
+function openDrawer() {
+  el.sidebar.classList.add("open");
+  el.drawerBackdrop.classList.add("open");
+  el.menuToggle.classList.add("open");
+  el.menuToggle.setAttribute("aria-expanded", "true");
+}
+function closeDrawer() {
+  el.sidebar.classList.remove("open");
+  el.drawerBackdrop.classList.remove("open");
+  el.menuToggle.classList.remove("open");
+  el.menuToggle.setAttribute("aria-expanded", "false");
+}
+function toggleDrawer() {
+  el.sidebar.classList.contains("open") ? closeDrawer() : openDrawer();
+}
+
+el.menuToggle.addEventListener("click", toggleDrawer);
+el.drawerBackdrop.addEventListener("click", closeDrawer);
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeDrawer();
+});
 
 window.addEventListener("beforeunload", (e) => {
   if (dirty) {
