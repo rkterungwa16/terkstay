@@ -44,12 +44,23 @@ function clone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-// Everything except the two array-of-objects collections gets flattened
-// into the reactive store — see state.js's flatten() doc comment for why
-// hotels/roomTypes are excluded.
+// Everything except the array-of-objects collections gets flattened into
+// the reactive store. hotels/roomTypes are top-level; components.header.menus
+// is nested but the same hazard — see state.js's flatten() doc comment, and
+// admin/menuEditor.js, which already mutates `draft` directly for exactly
+// this reason. Excluding it here is what makes that safe: without this,
+// Discard's reset loop would run `state[...] = originalItems` through
+// reactive()'s shallowEqual, which always reports "not equal" for two
+// independently-cloned object arrays (their elements are never `===`
+// regardless of content) — so the bookkeeping subscriber would fire and
+// reassign `draft`'s menu-items array to be the *same object* as
+// `original`'s. Invisible after one Discard, but any edit after that would
+// then also mutate `original` in place, corrupting the revert baseline for
+// the rest of the session.
 function leafPortion(cfg) {
   const { hotels, roomTypes, ...rest } = cfg;
-  return rest;
+  const { menus, ...headerRest } = rest.components.header;
+  return { ...rest, components: { ...rest.components, header: headerRest } };
 }
 
 // Builds the flat reactive proxy once and wires a bookkeeping subscriber
@@ -204,6 +215,7 @@ function discardChanges() {
   });
   draft.hotels = clone(original.hotels);
   draft.roomTypes = clone(original.roomTypes);
+  draft.components.header.menus = clone(original.components.header.menus);
   renderActiveSection();
   requestAnimationFrame(() =>
     requestAnimationFrame(() => {

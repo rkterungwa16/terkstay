@@ -89,9 +89,18 @@ export default function App() {
     if (search.nights <= 0) alert("Check-out date must be after check-in date.");
   }
 
+  // The header's search icon isn't a separate search UI — it scrolls to and
+  // focuses the existing hero search panel, since that's the site's one
+  // real search surface.
+  function handleSearchActivate() {
+    const form = document.getElementById("searchPanelForm");
+    form?.scrollIntoView({ behavior: "smooth", block: "center" });
+    document.getElementById("branchSelect")?.focus();
+  }
+
   return (
     <>
-      <Header content={C.header.content} cities={cities} />
+      <Header config={C.header} cities={cities} onSearchActivate={handleSearchActivate} />
 
       <Hero content={C.hero.content}>
         <SearchPanel

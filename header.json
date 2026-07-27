@@ -1,0 +1,362 @@
+{
+  "header": {
+    "appearance": {
+      "width": {
+        "type": "segmented-control",
+        "label": "Width",
+        "selected": "page",
+        "options": [
+          {
+            "label": "Page",
+            "value": "page"
+          },
+          {
+            "label": "Full",
+            "value": "full"
+          }
+        ]
+      },
+      "height": {
+        "type": "segmented-control",
+        "label": "Height",
+        "selected": "standard",
+        "options": [
+          {
+            "label": "Compact",
+            "value": "compact"
+          },
+          {
+            "label": "Standard",
+            "value": "standard"
+          }
+        ]
+      },
+      "stickyHeader": {
+        "type": "select",
+        "label": "Sticky header",
+        "selected": "always",
+        "options": [
+          {
+            "label": "Never",
+            "value": "never"
+          },
+          {
+            "label": "Scroll Up",
+            "value": "scroll-up"
+          },
+          {
+            "label": "Always",
+            "value": "always"
+          }
+        ]
+      },
+      "borderThickness": {
+        "type": "slider",
+        "label": "Border thickness",
+        "selected": 0,
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "unit": "px"
+      }
+    },
+
+    "logo": {
+      "position": {
+        "type": "segmented-control",
+        "label": "Position",
+        "selected": "left",
+        "options": [
+          {
+            "label": "Left",
+            "value": "left"
+          },
+          {
+            "label": "Center",
+            "value": "center"
+          },
+          {
+            "label": "Right",
+            "value": "right"
+          }
+        ]
+      }
+    },
+
+    "menu": {
+      "position": {
+        "type": "segmented-control",
+        "label": "Position",
+        "selected": "left",
+        "options": [
+          {
+            "label": "Left",
+            "value": "left"
+          },
+          {
+            "label": "Center",
+            "value": "center"
+          },
+          {
+            "label": "Right",
+            "value": "right"
+          }
+        ]
+      },
+      "row": {
+        "type": "segmented-control",
+        "label": "Row",
+        "selected": "top",
+        "options": [
+          {
+            "label": "Top",
+            "value": "top"
+          },
+          {
+            "label": "Bottom",
+            "value": "bottom"
+          }
+        ]
+      }
+    },
+    "menus": {
+      "main-navigation": {
+        "id": "main-navigation",
+        "name": "Main Navigation",
+        "items": [
+          {
+            "id": "home",
+            "title": "Home",
+            "url": "/"
+          },
+          {
+            "id": "shop",
+            "title": "Shop",
+            "url": "/collections/all",
+            "menuType": "mega",
+            "megaMenu": {
+              "columns": [
+                {
+                  "title": "Men",
+                  "links": [
+                    {
+                      "title": "New Arrivals",
+                      "url": "/collections/men-new"
+                    },
+                    {
+                      "title": "Shirts",
+                      "url": "/collections/mens-shirts"
+                    },
+                    {
+                      "title": "Pants",
+                      "url": "/collections/mens-pants"
+                    },
+                    {
+                      "title": "Shoes",
+                      "url": "/collections/mens-shoes"
+                    }
+                  ]
+                },
+                {
+                  "title": "Women",
+                  "links": [
+                    {
+                      "title": "New Arrivals",
+                      "url": "/collections/women-new"
+                    },
+                    {
+                      "title": "Dresses",
+                      "url": "/collections/dresses"
+                    },
+                    {
+                      "title": "Tops",
+                      "url": "/collections/tops"
+                    },
+                    {
+                      "title": "Shoes",
+                      "url": "/collections/womens-shoes"
+                    }
+                  ]
+                },
+                {
+                  "title": "Accessories",
+                  "links": [
+                    {
+                      "title": "Bags",
+                      "url": "/collections/bags"
+                    },
+                    {
+                      "title": "Belts",
+                      "url": "/collections/belts"
+                    },
+                    {
+                      "title": "Jewelry",
+                      "url": "/collections/jewelry"
+                    },
+                    {
+                      "title": "Watches",
+                      "url": "/collections/watches"
+                    }
+                  ]
+                }
+              ],
+              "featured": {
+                "title": "Summer Collection",
+                "description": "Save up to 40% this week.",
+                "image": "/images/mega-menu/summer.jpg",
+                "buttonText": "Shop Now",
+                "buttonUrl": "/collections/summer"
+              }
+            }
+          },
+          {
+            "id": "new-arrivals",
+            "title": "New Arrivals",
+            "url": "/collections/new"
+          },
+          {
+            "id": "brands",
+            "title": "Brands",
+            "url": "/pages/brands",
+            "menuType": "dropdown",
+            "children": [
+              {
+                "title": "Nike",
+                "url": "/collections/nike"
+              },
+              {
+                "title": "Adidas",
+                "url": "/collections/adidas"
+              },
+              {
+                "title": "Puma",
+                "url": "/collections/puma"
+              },
+              {
+                "title": "New Balance",
+                "url": "/collections/new-balance"
+              },
+              {
+                "title": "Converse",
+                "url": "/collections/converse"
+              }
+            ]
+          },
+          {
+            "id": "services",
+            "title": "Services",
+            "url": "/pages/services",
+            "menuType": "dropdown",
+            "children": [
+              {
+                "title": "Tailoring",
+                "url": "/pages/tailoring"
+              },
+              {
+                "title": "Alterations",
+                "url": "/pages/alterations"
+              },
+              {
+                "title": "Repairs",
+                "url": "/pages/repairs"
+              },
+              {
+                "title": "Custom Orders",
+                "url": "/pages/custom-orders",
+                "children": [
+                  {
+                    "title": "Wedding Wear",
+                    "url": "/pages/custom-orders/wedding"
+                  },
+                  {
+                    "title": "Corporate Uniforms",
+                    "url": "/pages/custom-orders/corporate"
+                  },
+                  {
+                    "title": "School Uniforms",
+                    "url": "/pages/custom-orders/schools"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "blog",
+            "title": "Blog",
+            "url": "/blogs/news"
+          },
+          {
+            "id": "about",
+            "title": "About",
+            "url": "/pages/about"
+          },
+          {
+            "id": "contact",
+            "title": "Contact",
+            "url": "/pages/contact"
+          }
+        ]
+      }
+    },
+    "customerAccount": {
+      "enabled": {
+        "type": "switch",
+        "label": "Customer account",
+        "selected": true
+      },
+      "menu": {
+        "type": "menu-picker",
+        "label": "Menu",
+        "selected": "customer-account",
+        "options": [
+          {
+            "label": "Profile",
+            "value": "profile"
+          },
+          {
+            "label": "Order",
+            "value": "order"
+          }
+        ]
+      }
+    },
+
+    "search": {
+      "enabled": {
+        "type": "switch",
+        "label": "Search icon",
+        "selected": true
+      },
+      "position": {
+        "type": "segmented-control",
+        "label": "Position",
+        "selected": "right",
+        "options": [
+          {
+            "label": "Left",
+            "value": "left"
+          },
+          {
+            "label": "Right",
+            "value": "right"
+          }
+        ]
+      },
+      "row": {
+        "type": "segmented-control",
+        "label": "Row",
+        "selected": "top",
+        "options": [
+          {
+            "label": "Top",
+            "value": "top"
+          },
+          {
+            "label": "Bottom",
+            "value": "bottom"
+          }
+        ]
+      }
+    }
+  }
+}

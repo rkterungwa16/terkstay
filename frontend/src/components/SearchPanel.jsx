@@ -16,7 +16,7 @@ export default function SearchPanel({
   onSubmit
 }) {
   return (
-    <form className="search-panel" onSubmit={onSubmit}>
+    <form className="search-panel" id="searchPanelForm" onSubmit={onSubmit}>
       <div className="field">
         <label htmlFor="branchSelect">{content.labels.branch}</label>
         <select id="branchSelect" value={branch} onChange={(e) => onBranchChange(e.target.value)}>

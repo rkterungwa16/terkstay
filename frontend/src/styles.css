@@ -99,11 +99,30 @@ button{font-family:inherit;cursor:pointer;}
 }
 
 /* ---------- Header ---------- */
-header.site{ background:var(--header-bg); color:var(--header-text); }
-.header-inner{
-  max-width:1180px; margin:0 auto; padding:22px 28px 26px;
-  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+header.site{
+  background:var(--header-bg); color:var(--header-text);
+  border-bottom-style:solid; border-bottom-color:var(--header-accent);
+  transition:transform .25s ease;
 }
+header.site[data-sticky="always"], header.site[data-sticky="scroll-up"]{ position:sticky; top:0; z-index:40; }
+header.site[data-sticky="never"]{ position:static; }
+header.site.header-hidden{ transform:translateY(-100%); }
+
+.header-inner[data-width="page"]{ max-width:1180px; margin:0 auto; }
+.header-inner[data-width="full"]{ max-width:none; }
+.header-inner{ padding:0 28px; }
+.header-inner[data-height="standard"] .header-row-top{ padding:22px 0 20px; }
+.header-inner[data-height="compact"] .header-row-top{ padding:12px 0 10px; }
+
+.header-row{ display:flex; align-items:center; gap:16px; }
+.header-row-top{ justify-content:space-between; }
+.header-row-bottom{ justify-content:center; padding:10px 0 16px; border-top:1px solid rgba(255,255,255,0.12); }
+
+.header-zone{ display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+.header-zone-left{ justify-content:flex-start; }
+.header-zone-center{ justify-content:center; flex:1; }
+.header-zone-right{ justify-content:flex-end; }
+
 .logo{
   font-family:var(--font-display); font-size:1.7rem; font-weight:600; letter-spacing:0.02em;
   display:flex; align-items:baseline; gap:10px;
@@ -112,8 +131,87 @@ header.site{ background:var(--header-bg); color:var(--header-text); }
   font-family:var(--font-body); font-size:0.6rem; letter-spacing:0.28em; text-transform:uppercase;
   color:var(--header-accent); font-weight:600;
 }
-nav.branches{ display:flex; gap:22px; font-size:0.88rem; flex-wrap:wrap; }
-nav.branches span{ color:var(--header-accent); font-weight:500; }
+
+/* ---------- Nav menu (top-level, dropdown, mega) ---------- */
+.nav-menu{ display:flex; align-items:center; gap:6px; list-style:none; margin:0; padding:0; }
+.nav-item-wrap{ position:relative; }
+.nav-link{
+  display:flex; align-items:center; gap:5px;
+  padding:8px 10px; border-radius:4px;
+  color:var(--header-text); text-decoration:none;
+  font-size:0.9rem; font-weight:500;
+}
+.nav-link:hover{ background:rgba(255,255,255,0.08); }
+.nav-link svg{ width:12px; height:12px; flex:none; opacity:0.75; }
+
+.submenu-panel{
+  position:absolute; top:100%; left:0; margin-top:6px;
+  background:var(--white); color:var(--ink);
+  border-radius:var(--radius); box-shadow:0 16px 40px rgba(0,0,0,0.22);
+  z-index:50;
+  opacity:0; visibility:hidden; transform:translateY(-6px);
+  transition:opacity .15s ease, transform .15s ease, visibility .15s;
+}
+.nav-item-wrap.has-submenu:hover > .submenu-panel,
+.nav-item-wrap.has-submenu:focus-within > .submenu-panel{
+  opacity:1; visibility:visible; transform:translateY(0);
+}
+/* A submenu item that itself has children (depth >= 1) flies its own
+   panel out to the side, since it's already inside a dropdown panel. */
+.depth-1.has-submenu > .submenu-panel, .depth-2.has-submenu > .submenu-panel{
+  top:0; left:100%; margin-top:0; margin-left:4px;
+}
+
+.dropdown-panel{ padding:8px; min-width:200px; }
+.dropdown-panel .nav-menu-sub{ flex-direction:column; align-items:stretch; gap:0; }
+.dropdown-panel .nav-link{ color:var(--ink); padding:9px 12px; }
+.dropdown-panel .nav-link:hover{ background:var(--ivory-dim); }
+
+.mega-panel{ padding:22px; display:flex; gap:32px; min-width:520px; }
+.mega-menu{ display:flex; gap:32px; width:100%; }
+.mega-menu-columns{ display:flex; gap:32px; flex:1; }
+.mega-menu-column h4{
+  font-family:var(--font-body); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em;
+  color:var(--indigo-mid); margin:0 0 10px; font-weight:700;
+}
+.mega-menu-column ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
+.mega-menu-column a{ color:var(--ink); text-decoration:none; font-size:0.86rem; padding:4px 0; display:block; }
+.mega-menu-column a:hover{ color:var(--indigo-deep); text-decoration:underline; }
+.mega-menu-featured{
+  width:220px; flex:none; background:var(--ivory-dim); border-radius:var(--radius); padding:16px;
+}
+.mega-menu-featured img{ width:100%; border-radius:4px; margin-bottom:10px; }
+.mega-menu-featured-title{ font-family:var(--font-display); font-weight:600; font-size:1rem; margin-bottom:6px; }
+.mega-menu-featured p{ font-size:0.8rem; color:var(--indigo-mid); margin:0 0 12px; }
+.mega-menu-featured-btn{
+  display:inline-block; background:var(--gold); color:var(--indigo-deep); font-size:0.78rem; font-weight:600;
+  padding:7px 14px; border-radius:4px; text-decoration:none;
+}
+
+/* ---------- Header icon buttons (search, account) ---------- */
+.header-icon-btn{
+  display:flex; align-items:center; justify-content:center;
+  width:34px; height:34px; border-radius:50%;
+  background:none; border:none; color:var(--header-text); cursor:pointer; text-decoration:none;
+}
+.header-icon-btn:hover{ background:rgba(255,255,255,0.1); }
+.header-icon-btn svg{ width:18px; height:18px; }
+
+@media(max-width:640px){
+  .header-row-top{ flex-wrap:wrap; }
+  .header-zone{ gap:12px; }
+  .nav-menu{ flex-direction:column; align-items:flex-start; width:100%; }
+  /* No hover on touch — submenus are always expanded inline instead of
+     flyout panels, and nested flyouts fall back to a plain indented list. */
+  .submenu-panel{
+    position:static; opacity:1; visibility:visible; transform:none;
+    box-shadow:none; margin:4px 0 4px 12px; min-width:0; width:100%;
+  }
+  .mega-panel{ flex-direction:column; min-width:0; }
+  .mega-menu{ flex-direction:column; }
+  .mega-menu-columns{ flex-direction:column; gap:16px; }
+  .mega-menu-featured{ width:100%; }
+}
 
 /* ---------- Hero ---------- */
 .hero{ max-width:1180px; margin:0 auto; padding:52px 28px 64px; color:var(--hero-text); }

@@ -254,8 +254,134 @@
       },
       "content": {
         "logoText": "ADIRE",
-        "logoSubtitle": "Hotels & Suites",
-        "showBranchNav": true
+        "logoSubtitle": "Hotels & Suites"
+      },
+      "appearance": {
+        "width": "page",
+        "height": "standard",
+        "stickyHeader": "always",
+        "borderThickness": 0
+      },
+      "logo": {
+        "position": "left"
+      },
+      "menu": {
+        "position": "left",
+        "row": "top"
+      },
+      "menus": {
+        "main-navigation": {
+          "id": "main-navigation",
+          "name": "Main Navigation",
+          "items": [
+            {
+              "id": "home",
+              "title": "Home",
+              "url": "/"
+            },
+            {
+              "id": "hotels",
+              "title": "Hotels",
+              "url": "#",
+              "menuType": "mega",
+              "megaMenu": {
+                "columns": [
+                  {
+                    "title": "By City",
+                    "links": [
+                      {
+                        "title": "Lagos",
+                        "url": "#lagos"
+                      },
+                      {
+                        "title": "Abuja",
+                        "url": "#abuja"
+                      },
+                      {
+                        "title": "Port Harcourt",
+                        "url": "#port-harcourt"
+                      },
+                      {
+                        "title": "Enugu",
+                        "url": "#enugu"
+                      },
+                      {
+                        "title": "Kano",
+                        "url": "#kano"
+                      }
+                    ]
+                  },
+                  {
+                    "title": "By Star Rating",
+                    "links": [
+                      {
+                        "title": "5-Star",
+                        "url": "#5-star"
+                      },
+                      {
+                        "title": "4-Star",
+                        "url": "#4-star"
+                      },
+                      {
+                        "title": "3-Star",
+                        "url": "#3-star"
+                      }
+                    ]
+                  }
+                ],
+                "featured": {
+                  "title": "Adire Victoria Island",
+                  "description": "Our flagship waterfront property, with a rooftop pool and conference facilities.",
+                  "image": "",
+                  "buttonText": "View hotel",
+                  "buttonUrl": "#lagos"
+                }
+              }
+            },
+            {
+              "id": "room-types",
+              "title": "Room Types",
+              "url": "#",
+              "menuType": "dropdown",
+              "children": [
+                {
+                  "title": "Standard Room",
+                  "url": "#standard"
+                },
+                {
+                  "title": "Deluxe Room",
+                  "url": "#deluxe"
+                },
+                {
+                  "title": "Executive Suite",
+                  "url": "#executive"
+                },
+                {
+                  "title": "Presidential Suite",
+                  "url": "#presidential"
+                }
+              ]
+            },
+            {
+              "id": "about",
+              "title": "About",
+              "url": "/pages/about"
+            },
+            {
+              "id": "contact",
+              "title": "Contact",
+              "url": "/pages/contact"
+            }
+          ]
+        }
+      },
+      "customerAccount": {
+        "enabled": false
+      },
+      "search": {
+        "enabled": true,
+        "position": "right",
+        "row": "top"
       }
     },
     "hero": {

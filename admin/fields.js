@@ -235,6 +235,128 @@ export function listField({ label, hint, values, onChange }) {
   return wrapper;
 }
 
+// A single-select row of toggle buttons — "segmented-control" in the
+// theme-settings schema (e.g. header width: Page / Full). No single native
+// <input> exists here, so this can't be individually re-bound by bind() on
+// Discard — the section's full re-render (see dashboard.js) is what
+// repaints it in that case, same as listField/checkboxGroupField below.
+export function segmentedField({ label, value, options, hint, onChange }) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "field";
+  const lbl = document.createElement("label");
+  lbl.textContent = label;
+  wrapper.appendChild(lbl);
+
+  const group = document.createElement("div");
+  group.className = "segmented";
+  group.setAttribute("role", "group");
+  group.setAttribute("aria-label", label);
+
+  let current = value;
+  const buttons = options.map((opt) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "segmented-option" + (opt.value === current ? " active" : "");
+    btn.setAttribute("aria-pressed", opt.value === current ? "true" : "false");
+    btn.textContent = opt.label;
+    btn.addEventListener("click", () => {
+      if (opt.value === current) return;
+      current = opt.value;
+      buttons.forEach((b, i) => {
+        const isActive = options[i].value === current;
+        b.classList.toggle("active", isActive);
+        b.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+      onChange(current);
+    });
+    group.appendChild(btn);
+    return btn;
+  });
+
+  wrapper.appendChild(group);
+  if (hint) {
+    const hintEl = document.createElement("div");
+    hintEl.className = "field-hint";
+    hintEl.textContent = hint;
+    wrapper.appendChild(hintEl);
+  }
+  return wrapper;
+}
+
+// Range slider with a live numeric readout — "slider" in the schema (e.g.
+// header border thickness, 0-20px).
+export function sliderField({ label, value, hint, onChange, min = 0, max = 100, step = 1, unit = "" }) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "field";
+  const lbl = document.createElement("label");
+  lbl.textContent = label;
+  wrapper.appendChild(lbl);
+
+  const row = document.createElement("div");
+  row.className = "slider-row";
+
+  const input = document.createElement("input");
+  input.type = "range";
+  input.min = min;
+  input.max = max;
+  input.step = step;
+  input.value = value ?? min;
+
+  const readout = document.createElement("span");
+  readout.className = "slider-readout";
+  readout.textContent = `${input.value}${unit}`;
+
+  input.addEventListener("input", () => {
+    readout.textContent = `${input.value}${unit}`;
+    onChange(Number(input.value));
+  });
+
+  row.appendChild(input);
+  row.appendChild(readout);
+  wrapper.appendChild(row);
+
+  if (hint) {
+    const hintEl = document.createElement("div");
+    hintEl.className = "field-hint";
+    hintEl.textContent = hint;
+    wrapper.appendChild(hintEl);
+  }
+  return wrapper;
+}
+
+// Boolean toggle styled as a switch rather than checkboxField's plain
+// checkbox — "switch" in the schema (customer account / search enabled).
+// Still a real <input type="checkbox"> underneath (role="switch" added for
+// more precise screen-reader semantics), so wireCheckbox() binds it fine.
+export function switchField({ label, checked, hint, onChange }) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "field";
+  const row = document.createElement("label");
+  row.className = "switch-row";
+
+  const input = document.createElement("input");
+  input.type = "checkbox";
+  input.setAttribute("role", "switch");
+  input.checked = !!checked;
+  input.addEventListener("change", () => onChange(input.checked));
+
+  const track = document.createElement("span");
+  track.className = "switch-track";
+
+  row.appendChild(input);
+  row.appendChild(track);
+  row.appendChild(document.createTextNode(label));
+  wrapper.appendChild(row);
+
+  if (hint) {
+    const hintEl = document.createElement("div");
+    hintEl.className = "field-hint";
+    hintEl.textContent = hint;
+    wrapper.appendChild(hintEl);
+  }
+  return wrapper;
+}
+
 export function smallButton(label, onClick, variant) {
   const btn = document.createElement("button");
   btn.type = "button";

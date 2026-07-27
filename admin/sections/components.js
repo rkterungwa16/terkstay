@@ -1,5 +1,19 @@
-import { textField, textareaField, colorField, checkboxField, listField, sectionCard, pageHeader, humanize } from "../fields.js";
+import {
+  textField,
+  textareaField,
+  colorField,
+  checkboxField,
+  listField,
+  sectionCard,
+  pageHeader,
+  humanize,
+  segmentedField,
+  sliderField,
+  selectField,
+  switchField
+} from "../fields.js";
 import { wireField, wireCheckbox } from "../state.js";
+import { renderMenuEditor } from "../menuEditor.js";
 
 const SUB_COMPONENTS = [
   { key: "header", label: "Header" },
@@ -55,7 +69,6 @@ function renderContentCard(subKey, content, ctx) {
     case "header":
       text("Logo text", "logoText");
       text("Logo subtitle", "logoSubtitle");
-      bool("Show branch nav", "showBranchNav");
       break;
 
     case "hero":
@@ -140,6 +153,127 @@ function renderContentCard(subKey, content, ctx) {
   return card;
 }
 
+// Header-only settings beyond the generic style/content pattern every other
+// component uses — appearance, logo/menu placement, search, customer
+// account, and the main navigation menu itself. Kept in its own function
+// rather than bolted onto renderContentCard's switch, since none of this
+// is copy/color — it's structural configuration with its own field types
+// (segmented control, slider, switch) straight from the reference schema.
+function renderHeaderExtras(container, ctx) {
+  const header = ctx.draft.components.header;
+  const w = (fieldFn, path, opts) => wireField(fieldFn, { bus: ctx.bus, state: ctx.state, path, ...opts });
+  const wc = (fieldFn, path, opts) => wireCheckbox(fieldFn, { bus: ctx.bus, state: ctx.state, path, ...opts });
+
+  // --- Appearance ---
+  const appearance = sectionCard("Appearance", "Overall shape of the header bar.");
+  appearance.grid.appendChild(
+    w(segmentedField, "components.header.appearance.width", {
+      label: "Width",
+      options: [
+        { value: "page", label: "Page" },
+        { value: "full", label: "Full" }
+      ]
+    })
+  );
+  appearance.grid.appendChild(
+    w(segmentedField, "components.header.appearance.height", {
+      label: "Height",
+      options: [
+        { value: "compact", label: "Compact" },
+        { value: "standard", label: "Standard" }
+      ]
+    })
+  );
+  appearance.grid.appendChild(
+    w(selectField, "components.header.appearance.stickyHeader", {
+      label: "Sticky header",
+      options: [
+        { value: "never", label: "Never" },
+        { value: "scroll-up", label: "Scroll Up" },
+        { value: "always", label: "Always" }
+      ]
+    })
+  );
+  appearance.grid.appendChild(
+    w(sliderField, "components.header.appearance.borderThickness", { label: "Border thickness", min: 0, max: 20, step: 1, unit: "px" })
+  );
+  container.appendChild(appearance.card);
+
+  // --- Logo ---
+  const logo = sectionCard("Logo", "Where the logo sits in the header.");
+  logo.grid.appendChild(
+    w(segmentedField, "components.header.logo.position", {
+      label: "Position",
+      options: [
+        { value: "left", label: "Left" },
+        { value: "center", label: "Center" },
+        { value: "right", label: "Right" }
+      ]
+    })
+  );
+  container.appendChild(logo.card);
+
+  // --- Menu ---
+  const menuCard = sectionCard("Menu", "Where the main navigation sits.");
+  menuCard.grid.appendChild(
+    w(segmentedField, "components.header.menu.position", {
+      label: "Position",
+      options: [
+        { value: "left", label: "Left" },
+        { value: "center", label: "Center" },
+        { value: "right", label: "Right" }
+      ]
+    })
+  );
+  menuCard.grid.appendChild(
+    w(segmentedField, "components.header.menu.row", {
+      label: "Row",
+      options: [
+        { value: "top", label: "Top" },
+        { value: "bottom", label: "Bottom" }
+      ]
+    })
+  );
+  container.appendChild(menuCard.card);
+
+  // --- Search ---
+  const searchCard = sectionCard("Search", "The search icon in the header — activating it scrolls to and focuses the hotel search panel.");
+  searchCard.grid.appendChild(wc(switchField, "components.header.search.enabled", { label: "Search icon" }));
+  searchCard.grid.appendChild(
+    w(segmentedField, "components.header.search.position", {
+      label: "Position",
+      options: [
+        { value: "left", label: "Left" },
+        { value: "right", label: "Right" }
+      ]
+    })
+  );
+  searchCard.grid.appendChild(
+    w(segmentedField, "components.header.search.row", {
+      label: "Row",
+      options: [
+        { value: "top", label: "Top" },
+        { value: "bottom", label: "Bottom" }
+      ]
+    })
+  );
+  container.appendChild(searchCard.card);
+
+  // --- Customer account ---
+  const accountCard = sectionCard("Customer account", "This demo has no real account system — enabling this shows a placeholder icon only.");
+  accountCard.grid.appendChild(wc(switchField, "components.header.customerAccount.enabled", { label: "Account icon" }));
+  container.appendChild(accountCard.card);
+
+  // --- Main navigation menu ---
+  // Structural (add/remove items, nested columns/children) — imperative,
+  // like amenities/roomTypes/hotels, not part of the flat reactive store.
+  const menuHeader = pageHeader("Main navigation", "The header's nav menu. Each item can be a plain link, a dropdown, or a mega menu.");
+  container.appendChild(menuHeader);
+  const menuEditorWrap = document.createElement("div");
+  container.appendChild(menuEditorWrap);
+  renderMenuEditor(menuEditorWrap, header.menus["main-navigation"], ctx);
+}
+
 export default {
   key: "components",
   label: "Components",
@@ -171,5 +305,6 @@ export default {
     const comp = components[activeSub];
     if (comp.style) container.appendChild(renderStyleCard(activeSub, comp.style, ctx));
     if (comp.content) container.appendChild(renderContentCard(activeSub, comp.content, ctx));
+    if (activeSub === "header") renderHeaderExtras(container, ctx);
   }
 };
