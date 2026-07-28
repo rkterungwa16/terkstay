@@ -326,7 +326,7 @@ header.site.header-hidden{ transform:translateY(-100%); }
 .field-label-spacer{ visibility:hidden; }
 .search-btn-cell .btn{ width:100%; flex:1; }
 
-@media(max-width:920px){ .search-panel{grid-template-columns:repeat(1,1fr);} }
+@media(max-width:920px){ .search-panel{grid-template-columns:repeat(2,1fr);} }
 @media(max-width:640px){ .search-panel{grid-template-columns:1fr;} }
 
 /* ---------- Main / results ---------- */

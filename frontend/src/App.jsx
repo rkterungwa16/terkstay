@@ -25,15 +25,25 @@ export default function App() {
   const [booking, setBooking] = useState(null); // { hotel, room } while the modal is open
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const appBodyRef = useRef(null);
+  const headerWrapRef = useRef(null);
 
-  // While the mobile nav drawer is open, the rest of the page (everything
-  // below the header) shouldn't be reachable by pointer, keyboard, or
-  // screen reader — same reasoning as the admin dashboard's sidebar drawer.
-  // Done imperatively via a ref rather than a prop so this works regardless
-  // of React version support for the `inert` DOM property as a JSX attribute.
+  // While the mobile nav drawer OR the booking modal is open, the rest of
+  // the page (everything below the header) shouldn't be reachable by
+  // pointer, keyboard, or screen reader — same reasoning as the admin
+  // dashboard's sidebar drawer. Done imperatively via a ref rather than a
+  // prop so this works regardless of React version support for the
+  // `inert` DOM property as a JSX attribute.
   useEffect(() => {
-    if (appBodyRef.current) appBodyRef.current.inert = mobileNavOpen;
-  }, [mobileNavOpen]);
+    if (appBodyRef.current) appBodyRef.current.inert = mobileNavOpen || !!booking;
+  }, [mobileNavOpen, booking]);
+
+  // The booking modal is a true full-viewport overlay — unlike the mobile
+  // nav drawer (which lives *inside* the header and needs the header to
+  // stay interactive so its own toggle button still works), the header
+  // itself should also be unreachable while the booking modal is open.
+  useEffect(() => {
+    if (headerWrapRef.current) headerWrapRef.current.inert = !!booking;
+  }, [booking]);
 
   // Apply theme + per-component styles as soon as config arrives, and again if it changes
   useEffect(() => {
@@ -111,13 +121,15 @@ export default function App() {
 
   return (
     <>
-      <Header
-        config={C.header}
-        cities={cities}
-        onSearchActivate={handleSearchActivate}
-        mobileNavOpen={mobileNavOpen}
-        onMobileNavOpenChange={setMobileNavOpen}
-      />
+      <div ref={headerWrapRef}>
+        <Header
+          config={C.header}
+          cities={cities}
+          onSearchActivate={handleSearchActivate}
+          mobileNavOpen={mobileNavOpen}
+          onMobileNavOpenChange={setMobileNavOpen}
+        />
+      </div>
 
       <div ref={appBodyRef}>
         <Hero content={C.hero.content}>
