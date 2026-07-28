@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useConfig } from "./hooks/useConfig.js";
 import { applyTheme } from "./theme/applyTheme.js";
 import { applyComponentStyles } from "./theme/applyComponentStyles.js";
@@ -23,6 +23,17 @@ export default function App() {
   const [guests, setGuests] = useState(2);
   const [currentHotelId, setCurrentHotelId] = useState(null);
   const [booking, setBooking] = useState(null); // { hotel, room } while the modal is open
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const appBodyRef = useRef(null);
+
+  // While the mobile nav drawer is open, the rest of the page (everything
+  // below the header) shouldn't be reachable by pointer, keyboard, or
+  // screen reader — same reasoning as the admin dashboard's sidebar drawer.
+  // Done imperatively via a ref rather than a prop so this works regardless
+  // of React version support for the `inert` DOM property as a JSX attribute.
+  useEffect(() => {
+    if (appBodyRef.current) appBodyRef.current.inert = mobileNavOpen;
+  }, [mobileNavOpen]);
 
   // Apply theme + per-component styles as soon as config arrives, and again if it changes
   useEffect(() => {
@@ -100,57 +111,65 @@ export default function App() {
 
   return (
     <>
-      <Header config={C.header} cities={cities} onSearchActivate={handleSearchActivate} />
+      <Header
+        config={C.header}
+        cities={cities}
+        onSearchActivate={handleSearchActivate}
+        mobileNavOpen={mobileNavOpen}
+        onMobileNavOpenChange={setMobileNavOpen}
+      />
 
-      <Hero content={C.hero.content}>
-        <SearchPanel
-          content={C.searchPanel.content}
-          buttonLabel={C.hero.content.searchButtonLabel}
-          cities={cities}
-          branch={branch}
-          onBranchChange={setBranch}
-          checkIn={checkIn}
-          onCheckInChange={setCheckIn}
-          checkOut={checkOut}
-          onCheckOutChange={setCheckOut}
-          guests={guests}
-          onGuestsChange={setGuests}
-          minDate={today}
-          onSubmit={handleSearchSubmit}
-        />
-      </Hero>
-
-      <main>
-        {search.nights <= 0 ? (
-          <div className="results-empty">Check-out date must be after check-in date.</div>
-        ) : currentHotel ? (
-          <RoomList
-            hotel={currentHotel}
-            roomTypes={config.roomTypes}
-            amenities={config.amenities}
-            search={search}
-            hotelCardContent={C.hotelCard.content}
-            roomCardContent={C.roomCard.content}
-            currencySymbol={config.policies.currencySymbol}
-            dateLocale={config.policies.dateLocale}
-            onBack={() => setCurrentHotelId(null)}
-            onBookRoom={(hotel, room) => setBooking({ hotel, room })}
+      <div ref={appBodyRef}>
+        <Hero content={C.hero.content}>
+          <SearchPanel
+            content={C.searchPanel.content}
+            buttonLabel={C.hero.content.searchButtonLabel}
+            cities={cities}
+            branch={branch}
+            onBranchChange={setBranch}
+            checkIn={checkIn}
+            onCheckInChange={setCheckIn}
+            checkOut={checkOut}
+            onCheckOutChange={setCheckOut}
+            guests={guests}
+            onGuestsChange={setGuests}
+            minDate={today}
+            onSubmit={handleSearchSubmit}
           />
-        ) : (
-          <HotelList
-            hotels={config.hotels}
-            roomTypes={config.roomTypes}
-            search={search}
-            content={C.hotelCard.content}
-            searchPanelContent={C.searchPanel.content}
-            currencySymbol={config.policies.currencySymbol}
-            dateLocale={config.policies.dateLocale}
-            onSelectHotel={(hotel) => setCurrentHotelId(hotel.id)}
-          />
-        )}
-      </main>
+        </Hero>
 
-      <Footer content={C.footer.content} cities={cities} />
+        <main>
+          {search.nights <= 0 ? (
+            <div className="results-empty">Check-out date must be after check-in date.</div>
+          ) : currentHotel ? (
+            <RoomList
+              hotel={currentHotel}
+              roomTypes={config.roomTypes}
+              amenities={config.amenities}
+              search={search}
+              hotelCardContent={C.hotelCard.content}
+              roomCardContent={C.roomCard.content}
+              currencySymbol={config.policies.currencySymbol}
+              dateLocale={config.policies.dateLocale}
+              onBack={() => setCurrentHotelId(null)}
+              onBookRoom={(hotel, room) => setBooking({ hotel, room })}
+            />
+          ) : (
+            <HotelList
+              hotels={config.hotels}
+              roomTypes={config.roomTypes}
+              search={search}
+              content={C.hotelCard.content}
+              searchPanelContent={C.searchPanel.content}
+              currencySymbol={config.policies.currencySymbol}
+              dateLocale={config.policies.dateLocale}
+              onSelectHotel={(hotel) => setCurrentHotelId(hotel.id)}
+            />
+          )}
+        </main>
+
+        <Footer content={C.footer.content} cities={cities} />
+      </div>
 
       {booking && (
         <BookingModal

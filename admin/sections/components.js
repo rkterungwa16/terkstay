@@ -197,6 +197,16 @@ function renderHeaderExtras(container, ctx) {
   appearance.grid.appendChild(
     w(sliderField, "components.header.appearance.borderThickness", { label: "Border thickness", min: 0, max: 20, step: 1, unit: "px" })
   );
+  appearance.grid.appendChild(
+    w(segmentedField, "components.header.appearance.mobileNav", {
+      label: "Mobile navigation",
+      hint: "Drawer: hamburger opens an off-canvas panel. Dropdown: menu stays inline, each submenu opens on tap.",
+      options: [
+        { value: "drawer", label: "Drawer" },
+        { value: "dropdown", label: "Dropdown" }
+      ]
+    })
+  );
   container.appendChild(appearance.card);
 
   // --- Logo ---

@@ -260,7 +260,8 @@
         "width": "page",
         "height": "standard",
         "stickyHeader": "always",
-        "borderThickness": 0
+        "borderThickness": 0,
+        "mobileNav": "drawer"
       },
       "logo": {
         "position": "left"

@@ -197,15 +197,78 @@ header.site.header-hidden{ transform:translateY(-100%); }
 .header-icon-btn:hover{ background:rgba(255,255,255,0.1); }
 .header-icon-btn svg{ width:18px; height:18px; }
 
+/* ---------- Mobile nav drawer (toggle hidden/inert above the breakpoint) ---------- */
+.mobile-nav-toggle{ display:none; }
+.mobile-nav-toggle.open svg{ transform:none; }
+
+.mobile-drawer-backdrop{
+  display:none;
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.45);
+  opacity:0; pointer-events:none;
+  transition:opacity .2s ease;
+  z-index:60;
+}
+.mobile-drawer-backdrop.open{ opacity:1; pointer-events:auto; }
+
+.mobile-drawer{
+  display:none;
+  position:fixed; top:0; left:0; height:100vh;
+  width:min(82vw, 320px);
+  background:var(--white); color:var(--ink);
+  z-index:65;
+  transform:translateX(-100%);
+  transition:transform .25s ease;
+  overflow-y:auto;
+  padding:70px 24px 24px;
+}
+.mobile-drawer.open{
+  transform:translateX(0);
+  box-shadow:8px 0 32px rgba(0,0,0,0.3);
+}
+.mobile-drawer .nav-menu{ flex-direction:column; align-items:stretch; gap:2px; }
+.mobile-drawer .nav-link{ color:var(--ink); padding:12px 4px; font-size:1rem; }
+.mobile-drawer .nav-link:hover{ background:var(--ivory-dim); }
+/* Inside the drawer, submenus are never flyout panels — same accordion
+   pattern as the mobile "dropdown" mode below, just always active here
+   regardless of viewport width, since the drawer only ever shows on mobile. */
+.mobile-drawer .submenu-panel{
+  position:static; opacity:1; visibility:visible; transform:none;
+  box-shadow:none; margin:2px 0 6px 14px; min-width:0; width:auto;
+  max-height:0; overflow:hidden; padding:0;
+  transition:max-height .2s ease;
+}
+.mobile-drawer .nav-item-wrap.force-open > .submenu-panel{ max-height:1000px; padding:6px 0; }
+.mobile-drawer .mega-panel{ flex-direction:column; }
+.mobile-drawer .mega-menu{ flex-direction:column; gap:20px; }
+.mobile-drawer .mega-menu-featured{ width:100%; }
+
 @media(max-width:640px){
+  header.site[data-mobile-nav="drawer"] .nav-slot{ display:none; }
+  header.site[data-mobile-nav="drawer"] .mobile-nav-toggle{ display:flex; }
+  header.site[data-mobile-nav="drawer"] .mobile-drawer-backdrop{ display:block; }
+  header.site[data-mobile-nav="drawer"] .mobile-drawer{ display:block; }
+
+  @media(prefers-reduced-motion: reduce){
+    .mobile-drawer, .mobile-drawer-backdrop{ transition:none; }
+  }
+
   .header-row-top{ flex-wrap:wrap; }
   .header-zone{ gap:12px; }
+
+  /* "dropdown" mode (mobileNav !== "drawer"): nav stays inline, stacked,
+     but each submenu only opens on tap now — via the .force-open class
+     NavMenu.jsx toggles — rather than the old rule that force-showed every
+     submenu unconditionally with no way to close any of them. */
   .nav-menu{ flex-direction:column; align-items:flex-start; width:100%; }
-  /* No hover on touch — submenus are always expanded inline instead of
-     flyout panels, and nested flyouts fall back to a plain indented list. */
   .submenu-panel{
-    position:static; opacity:1; visibility:visible; transform:none;
+    position:static; opacity:0; visibility:hidden; transform:none;
     box-shadow:none; margin:4px 0 4px 12px; min-width:0; width:100%;
+    max-height:0; overflow:hidden; padding:0;
+    transition:opacity .15s ease, max-height .2s ease;
+  }
+  .nav-item-wrap.force-open > .submenu-panel{
+    opacity:1; visibility:visible; max-height:1000px; padding:8px 0;
   }
   .mega-panel{ flex-direction:column; min-width:0; }
   .mega-menu{ flex-direction:column; }

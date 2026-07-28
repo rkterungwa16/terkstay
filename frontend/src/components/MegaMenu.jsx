@@ -1,4 +1,4 @@
-export default function MegaMenu({ megaMenu }) {
+export default function MegaMenu({ megaMenu, onNavigate }) {
   const { columns = [], featured } = megaMenu;
 
   return (
@@ -10,7 +10,7 @@ export default function MegaMenu({ megaMenu }) {
             <ul>
               {col.links.map((link) => (
                 <li key={link.title}>
-                  <a href={link.url}>{link.title}</a>
+                  <a href={link.url} onClick={onNavigate}>{link.title}</a>
                 </li>
               ))}
             </ul>
@@ -24,7 +24,7 @@ export default function MegaMenu({ megaMenu }) {
           <div className="mega-menu-featured-title">{featured.title}</div>
           {featured.description && <p>{featured.description}</p>}
           {featured.buttonText && (
-            <a className="mega-menu-featured-btn" href={featured.buttonUrl || "#"}>
+            <a className="mega-menu-featured-btn" href={featured.buttonUrl || "#"} onClick={onNavigate}>
               {featured.buttonText}
             </a>
           )}
