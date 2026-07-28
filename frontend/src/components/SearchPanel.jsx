@@ -62,6 +62,9 @@ export default function SearchPanel({
         />
       </div>
       <div className="field search-btn-cell">
+        <label className="field-label-spacer" aria-hidden="true">
+          &nbsp;
+        </label>
         <Button type="submit">{buttonLabel}</Button>
       </div>
     </form>

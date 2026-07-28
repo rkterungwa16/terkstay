@@ -292,15 +292,24 @@ header.site.header-hidden{ transform:translateY(-100%); }
 .search-panel{
   background:var(--search-bg); color:var(--search-text); border-radius:var(--radius); padding:26px;
   display:grid; grid-template-columns:repeat(5, 1fr); gap:16px;
+  /* stretch (the grid default, spelled out here) so every field's cell fills
+     the full row height; each field then reserves space for its label (a
+     real one, or the submit button's invisible spacer below) and lets its
+     control grow — via flex:1 — to fill whatever's left. That's what makes
+     the select, both date inputs, the number input, and the submit button
+     all end up exactly the same height and bottom-aligned, without relying
+     on native cross-browser control heights happening to already match. */
+  align-items:stretch;
   box-shadow:0 24px 48px rgba(0,0,0,0.28);
 }
-.field{display:flex;flex-direction:column;gap:6px;}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0;}
 .field label{
   font-size:0.68rem; text-transform:uppercase; letter-spacing:0.12em; font-weight:600; color:var(--search-label);
 }
 .field select, .field input{
   border:1px solid var(--search-field-border); background:var(--white); padding:10px 10px; font-size:0.92rem;
   font-family:inherit; border-radius:var(--radius); color:var(--ink);
+  width:100%; max-width:100%; min-width:0; box-sizing:border-box; flex:1;
 }
 .field select:focus, .field input:focus{border-color:var(--indigo-mid);}
 .btn{ border:none; border-radius:var(--radius); padding:12px 22px; font-weight:600; font-size:0.92rem; letter-spacing:0.02em; }
@@ -310,10 +319,15 @@ header.site.header-hidden{ transform:translateY(-100%); }
 .btn-outline:hover{background:var(--btn-outline-hover);color:var(--ivory);}
 .btn-sm{ padding:8px 14px; font-size:0.82rem; }
 .btn:disabled{ background:#C9C1AA; color:#6b6349; cursor:not-allowed; }
-.search-panel .search-btn-cell{ display:flex; align-items:flex-end; }
-.search-btn-cell .btn{width:100%;}
+/* The label-spacer is a real <label> element so it inherits .field label's
+   font-size/line-height exactly, reserving identical vertical space to a
+   real label above it — visibility:hidden (not display:none) keeps that
+   space in the layout while removing it from view and from screen readers. */
+.field-label-spacer{ visibility:hidden; }
+.search-btn-cell .btn{ width:100%; flex:1; }
 
-@media(max-width:920px){ .search-panel{grid-template-columns:repeat(2,1fr);} }
+@media(max-width:920px){ .search-panel{grid-template-columns:repeat(1,1fr);} }
+@media(max-width:640px){ .search-panel{grid-template-columns:1fr;} }
 
 /* ---------- Main / results ---------- */
 main{ max-width:1180px; margin:0 auto; padding:56px 28px 40px; }
