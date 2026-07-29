@@ -18,8 +18,10 @@
 }
 
 *{ box-sizing:border-box; }
+html, body{ height:100%; }
 body{
   margin:0;
+  overflow:hidden; /* all scrolling happens inside .sidebar / .main below, independently */
   font-family:var(--font);
   color:var(--text);
   background:var(--bg);
@@ -29,7 +31,9 @@ body{
 .layout{
   display:grid;
   grid-template-columns:260px 1fr;
-  min-height:100vh;
+  height:100vh; /* fixed, not min-height — this is what stops the sidebar and
+                   main content from ever growing past the viewport and
+                   forcing a single shared page scroll */
 }
 
 /* ---------- Sidebar ---------- */
@@ -39,6 +43,7 @@ body{
   padding:20px 0;
   display:flex;
   flex-direction:column;
+  overflow-y:auto; /* its own scroll, independent of .main's — see .layout's fixed height above */
 }
 .sidebar-head{
   padding:0 20px 20px;
@@ -134,7 +139,13 @@ body{
 }
 
 /* ---------- Main ---------- */
-.main{ display:flex; flex-direction:column; min-width:0; }
+.main{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  height:100%; /* bounded to .layout's 100vh row */
+  overflow-y:auto; /* its own scroll, independent of .sidebar's */
+}
 
 .topbar{
   background:var(--card-bg);
