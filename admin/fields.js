@@ -283,8 +283,136 @@ export function segmentedField({ label, value, options, hint, onChange }) {
   return wrapper;
 }
 
-// Range slider with a live numeric readout — "slider" in the schema (e.g.
-// header border thickness, 0-20px).
+// Dropdown constrained to a fixed palette of named colors (e.g. the theme's
+// 11 defined colors) — each option shows a swatch square + the color's
+// name, rather than free-form hex entry. Native <select><option> can't
+// render a colored swatch inside an option in any browser, so this is a
+// small custom disclosure-button + listbox, not a real <select> — which
+// also means (like segmentedField/switchField) there's no single native
+// <input> for wireField's bind() to attach to; Discard falls back to the
+// section's full re-render for this field type, same as those.
+//
+// `palette` is an array of { key, cssVar, hex, label }. `value` is matched
+// against each entry's `cssVar` first, then its `hex` (so a config saved
+// with a raw hex that happens to equal a palette color still shows that
+// color selected, not "custom"). A `value` matching neither is shown as-is
+// — swatch colored with the raw value, label showing the raw value — so
+// this never crashes or silently drops an unrecognized color.
+export function paletteField({ label, value, hint, palette, onChange }) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "field palette-field";
+  const lbl = document.createElement("label");
+  lbl.textContent = label;
+  wrapper.appendChild(lbl);
+
+  const box = document.createElement("div");
+  box.className = "palette-box";
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.className = "palette-trigger";
+  trigger.setAttribute("aria-haspopup", "listbox");
+  trigger.setAttribute("aria-expanded", "false");
+
+  const panel = document.createElement("div");
+  panel.className = "palette-panel";
+  panel.setAttribute("role", "listbox");
+  panel.setAttribute("aria-label", label);
+  panel.hidden = true;
+
+  function findMatch(val) {
+    return palette.find((p) => p.cssVar === val) || palette.find((p) => p.hex.toLowerCase() === String(val).toLowerCase());
+  }
+
+  function swatchEl(hex) {
+    const sw = document.createElement("span");
+    sw.className = "palette-swatch";
+    sw.style.background = hex;
+    return sw;
+  }
+
+  function renderTrigger() {
+    const match = findMatch(value);
+    trigger.innerHTML = "";
+    trigger.appendChild(swatchEl(match ? match.hex : value));
+    const text = document.createElement("span");
+    text.className = "palette-trigger-label";
+    text.textContent = match ? match.label : value;
+    trigger.appendChild(text);
+    const caret = document.createElement("span");
+    caret.className = "palette-caret";
+    caret.setAttribute("aria-hidden", "true");
+    caret.textContent = "▾";
+    trigger.appendChild(caret);
+  }
+
+  function renderPanel() {
+    panel.innerHTML = "";
+    const match = findMatch(value);
+    palette.forEach((p) => {
+      const opt = document.createElement("button");
+      opt.type = "button";
+      opt.className = "palette-option" + (match?.key === p.key ? " selected" : "");
+      opt.setAttribute("role", "option");
+      opt.setAttribute("aria-selected", match?.key === p.key ? "true" : "false");
+      opt.appendChild(swatchEl(p.hex));
+      const text = document.createElement("span");
+      text.className = "palette-option-label";
+      text.textContent = p.label;
+      opt.appendChild(text);
+      const hexText = document.createElement("span");
+      hexText.className = "palette-option-hex mono";
+      hexText.textContent = p.hex;
+      opt.appendChild(hexText);
+      opt.addEventListener("click", () => {
+        value = p.cssVar;
+        onChange(value);
+        renderTrigger();
+        closePanel();
+      });
+      panel.appendChild(opt);
+    });
+  }
+
+  function onDocClick(e) {
+    if (!box.contains(e.target)) closePanel();
+  }
+  function onKeydown(e) {
+    if (e.key === "Escape") {
+      closePanel();
+      trigger.focus();
+    }
+  }
+  function openPanel() {
+    renderPanel();
+    panel.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+    document.addEventListener("click", onDocClick);
+    document.addEventListener("keydown", onKeydown);
+  }
+  function closePanel() {
+    panel.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+    document.removeEventListener("click", onDocClick);
+    document.removeEventListener("keydown", onKeydown);
+  }
+
+  trigger.addEventListener("click", () => (panel.hidden ? openPanel() : closePanel()));
+
+  renderTrigger();
+  box.appendChild(trigger);
+  box.appendChild(panel);
+  wrapper.appendChild(box);
+  if (hint) {
+    const hintEl = document.createElement("div");
+    hintEl.className = "field-hint";
+    hintEl.textContent = hint;
+    wrapper.appendChild(hintEl);
+  }
+  return wrapper;
+}
+
+
 export function sliderField({ label, value, hint, onChange, min = 0, max = 100, step = 1, unit = "" }) {
   const wrapper = document.createElement("div");
   wrapper.className = "field";

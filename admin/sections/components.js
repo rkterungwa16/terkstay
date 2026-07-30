@@ -1,7 +1,6 @@
 import {
   textField,
   textareaField,
-  colorField,
   checkboxField,
   listField,
   sectionCard,
@@ -10,10 +9,30 @@ import {
   segmentedField,
   sliderField,
   selectField,
-  switchField
+  switchField,
+  paletteField
 } from "../fields.js";
 import { wireField, wireCheckbox } from "../state.js";
 import { renderMenuEditor } from "../menuEditor.js";
+
+// "indigoDeep" -> "indigo-deep", matching the --indigo-deep custom property
+// names theme/applyTheme.js sets on :root.
+function toKebab(key) {
+  return key.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+}
+
+// Builds the { key, cssVar, hex, label } list every component Style card's
+// color dropdowns are constrained to, straight from the current draft's
+// theme palette — so renaming/recoloring a theme color on the Theme tab is
+// immediately reflected here the next time this section renders.
+function themePalette(colors) {
+  return Object.keys(colors).map((key) => ({
+    key,
+    cssVar: `var(--${toKebab(key)})`,
+    hex: colors[key],
+    label: humanize(key)
+  }));
+}
 
 const SUB_COMPONENTS = [
   { key: "header", label: "Header" },
@@ -32,15 +51,20 @@ const SUB_COMPONENTS = [
 let activeSub = "header";
 
 function renderStyleCard(compKey, style, ctx) {
-  const { card, grid } = sectionCard("Style", "CSS color values — hex, rgba(), or var(--token) references.");
+  const { card, grid } = sectionCard(
+    "Style",
+    "Each color is picked from the theme's palette (Theme tab) — add or recolor a swatch there to change what's offered here."
+  );
   grid.classList.add("field-grid-colors");
+  const palette = themePalette(ctx.draft.theme.colors);
   Object.keys(style).forEach((key) => {
     grid.appendChild(
-      wireField(colorField, {
+      wireField(paletteField, {
         bus: ctx.bus,
         state: ctx.state,
         path: `components.${compKey}.style.${key}`,
-        label: humanize(key)
+        label: humanize(key),
+        palette
       })
     );
   });
